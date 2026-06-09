@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waste to Wonder: Dari Limbah Menjadi Manfaat</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark: #1a7a2e;
+  --green-main: #2ecc71;
+  --green-light: #a8edbc;
+  --green-pale: #e8f8ee;
+  --yellow: #f9c74f;
+  --yellow-dark: #f4a522;
+  --orange: #f8961e;
+  --white: #ffffff;
+  --text-dark: #1a2e22;
+  --text-mid: #3d6b4a;
+  --radius: 20px;
+  --radius-lg: 32px;
+  --shadow: 0 8px 32px rgba(46,204,113,0.15);
+  --shadow-card: 0 4px 24px rgba(26,122,46,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--green-pale);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* ─── LOADING SCREEN ─── */
+#loading-screen {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #1a7a2e 0%, #2ecc71 60%, #f9c74f 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s;
+}
+#loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loading-tree { font-size: 80px; animation: growTree 1.5s ease infinite alternate; }
+@keyframes growTree { from { transform: scale(0.8) translateY(10px); } to { transform: scale(1.1) translateY(-5px); } }
+.loading-text { color: #fff; font-size: 1.4rem; font-weight: 700; margin-top: 20px; letter-spacing: 1px; }
+.loading-bar { width: 220px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 99px; margin-top: 16px; overflow: hidden; }
+.loading-bar-fill { height: 100%; background: #fff; border-radius: 99px; animation: loadFill 2.2s ease forwards; }
+@keyframes loadFill { from { width: 0; } to { width: 100%; } }
+.loading-sub { color: rgba(255,255,255,0.85); font-size: 0.85rem; margin-top: 10px; }
+
+/* ─── PROGRESS BAR ─── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 5px;
+  background: linear-gradient(90deg, var(--green-main), var(--yellow));
+  z-index: 1000; transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--green-main);
+}
+
+/* ─── FLOATING ELEMENTS ─── */
+.floating-leaves { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+.leaf {
+  position: absolute; font-size: 1.4rem; opacity: 0.35;
+  animation: floatLeaf linear infinite;
+  user-select: none;
+}
+@keyframes floatLeaf {
+  0% { transform: translateY(-60px) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.35; }
+  90% { opacity: 0.35; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+  border-radius: 99px; padding: 10px 28px;
+  display: flex; align-items: center; gap: 20px;
+  box-shadow: 0 4px 24px rgba(46,204,113,0.18);
+  z-index: 500; border: 2px solid rgba(46,204,113,0.15);
+  max-width: calc(100vw - 32px);
+}
+.nav-logo { font-size: 1.1rem; font-weight: 800; color: var(--green-dark); white-space: nowrap; }
+.nav-logo span { color: var(--yellow-dark); }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  text-decoration: none; font-size: 0.75rem; font-weight: 600;
+  color: var(--text-mid); padding: 6px 12px; border-radius: 99px;
+  transition: all 0.25s;
+}
+.nav-links a:hover { background: var(--green-main); color: #fff; }
+@media (max-width: 640px) { .nav-links { display: none; } }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1a7a2e 0%, #27ae60 45%, #a8edbc 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; text-align: center;
+  padding: 100px 20px 60px;
+}
+.hero-clouds { position: absolute; top: 0; left: 0; width: 100%; pointer-events: none; }
+.cloud {
+  position: absolute; font-size: 3rem; opacity: 0.18;
+  animation: driftCloud linear infinite;
+}
+@keyframes driftCloud {
+  0% { transform: translateX(-120px); }
+  100% { transform: translateX(110vw); }
+}
+.hero-ground {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 120px;
+  background: linear-gradient(180deg, transparent, #1a7a2e);
+}
+.hero-trees {
+  position: absolute; bottom: 30px; left: 0; width: 100%;
+  display: flex; justify-content: space-between; padding: 0 20px;
+  pointer-events: none;
+}
+.hero-tree { font-size: 4rem; animation: treeSway 4s ease-in-out infinite alternate; opacity: 0.7; }
+.hero-tree:nth-child(2) { font-size: 5.5rem; animation-delay: 1s; }
+.hero-tree:nth-child(3) { font-size: 3.5rem; animation-delay: 0.5s; }
+@keyframes treeSway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.hero-content { position: relative; z-index: 2; max-width: 700px; }
+.hero-badge {
+  display: inline-block; background: var(--yellow); color: var(--text-dark);
+  border-radius: 99px; padding: 6px 20px; font-size: 0.8rem; font-weight: 700;
+  margin-bottom: 20px; animation: badgePop 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+@keyframes badgePop { from { opacity: 0; transform: scale(0.5) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.hero-title {
+  font-size: clamp(2rem, 6vw, 3.8rem); font-weight: 900; color: #fff;
+  line-height: 1.1; margin-bottom: 16px;
+  animation: titleReveal 1s ease 0.3s both;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.hero-title .highlight { color: var(--yellow); }
+@keyframes titleReveal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.hero-sub {
+  font-size: clamp(0.9rem, 2.5vw, 1.15rem); color: rgba(255,255,255,0.88);
+  margin-bottom: 36px; line-height: 1.7;
+  animation: titleReveal 1s ease 0.5s both;
+}
+.hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; animation: titleReveal 1s ease 0.7s both; }
+.btn-primary {
+  background: var(--yellow); color: var(--text-dark);
+  border: none; border-radius: 99px; padding: 14px 32px;
+  font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.25s; box-shadow: 0 6px 20px rgba(249,199,79,0.5);
+  text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 32px rgba(249,199,79,0.6); }
+.btn-secondary {
+  background: rgba(255,255,255,0.2); color: #fff;
+  border: 2px solid rgba(255,255,255,0.5); border-radius: 99px; padding: 13px 32px;
+  font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: all 0.25s; backdrop-filter: blur(8px);
+  text-decoration: none; display: inline-block;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.35); transform: translateY(-3px); }
+.hero-icons {
+  margin-top: 40px; display: flex; gap: 20px; justify-content: center;
+  animation: titleReveal 1s ease 0.9s both;
+}
+.hero-icon-item { text-align: center; color: rgba(255,255,255,0.85); }
+.hero-icon-item .ico { font-size: 2.2rem; display: block; animation: iconBounce 2s ease infinite; }
+.hero-icon-item:nth-child(2) .ico { animation-delay: 0.3s; }
+.hero-icon-item:nth-child(3) .ico { animation-delay: 0.6s; }
+.hero-icon-item span:last-child { font-size: 0.7rem; font-weight: 600; display: block; margin-top: 4px; }
+@keyframes iconBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* ─── SECTIONS COMMON ─── */
+section { position: relative; z-index: 2; }
+.section-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.section-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; color: var(--green-dark);
+  text-align: center; margin-bottom: 10px;
+}
+.section-title .emoji { margin-right: 8px; }
+.section-sub {
+  text-align: center; color: var(--text-mid); font-size: 0.95rem;
+  margin-bottom: 40px; line-height: 1.7;
+}
+.section-divider {
+  width: 60px; height: 6px; background: linear-gradient(90deg, var(--green-main), var(--yellow));
+  border-radius: 99px; margin: 10px auto 20px;
+}
+
+/* ─── MATERI SECTION ─── */
+#materi {
+  padding: 80px 0;
+  background: linear-gradient(180deg, var(--green-pale) 0%, #fff 100%);
+}
+.progress-tracker {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 40px; flex-wrap: wrap;
+}
+.progress-dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #ddd; display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer;
+  transition: all 0.3s; border: 3px solid transparent; color: #999;
+}
+.progress-dot.active { background: var(--green-main); color: #fff; border-color: var(--green-dark); transform: scale(1.2); }
+.progress-dot.done { background: var(--green-light); color: var(--green-dark); border-color: var(--green-main); }
+.progress-line { width: 30px; height: 4px; background: #ddd; border-radius: 99px; transition: background 0.3s; }
+.progress-line.done { background: var(--green-main); }
+.materi-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.materi-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 28px 20px;
+  text-align: center; cursor: pointer; transition: all 0.3s;
+  box-shadow: var(--shadow-card); border: 3px solid transparent;
+  position: relative; overflow: hidden;
+}
+.materi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+  background: linear-gradient(90deg, var(--green-main), var(--yellow));
+}
+.materi-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 48px rgba(46,204,113,0.25); border-color: var(--green-main); }
+.materi-card.active-card { border-color: var(--green-main); background: var(--green-pale); transform: translateY(-4px); }
+.materi-card .card-icon { font-size: 3rem; margin-bottom: 14px; display: block; }
+.materi-card h3 { font-size: 0.9rem; font-weight: 800; color: var(--green-dark); margin-bottom: 6px; }
+.materi-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+.materi-detail {
+  background: #fff; border-radius: var(--radius-lg); padding: 40px;
+  margin-top: 32px; box-shadow: var(--shadow);
+  border: 2px solid var(--green-light);
+  animation: fadeInUp 0.5s ease;
+  display: none;
+}
+.materi-detail.show { display: block; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.detail-title { font-size: 1.5rem; font-weight: 900; color: var(--green-dark); margin-bottom: 16px; }
+.detail-text { color: var(--text-mid); line-height: 1.8; margin-bottom: 20px; font-size: 0.95rem; }
+.example-grid { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+.example-item {
+  background: var(--green-pale); border-radius: var(--radius); padding: 16px 20px;
+  text-align: center; flex: 1; min-width: 100px;
+  border: 2px solid var(--green-light); transition: all 0.25s;
+}
+.example-item:hover { background: var(--green-light); transform: scale(1.05); }
+.example-item .ex-icon { font-size: 2.2rem; display: block; margin-bottom: 6px; }
+.example-item span:last-child { font-size: 0.78rem; font-weight: 700; color: var(--green-dark); }
+.wonder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top: 16px; }
+.wonder-item {
+  background: linear-gradient(135deg, var(--green-pale), #fff);
+  border: 2px solid var(--green-light); border-radius: var(--radius);
+  padding: 20px 14px; text-align: center; transition: all 0.3s; cursor: default;
+}
+.wonder-item:hover { background: linear-gradient(135deg, var(--green-light), var(--green-pale)); transform: translateY(-4px); box-shadow: var(--shadow-card); }
+.wonder-item .w-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+.wonder-item p { font-size: 0.78rem; font-weight: 700; color: var(--green-dark); }
+
+/* ─── VIDEO SECTION ─── */
+#video-section {
+  padding: 80px 0;
+  background: linear-gradient(160deg, #1a7a2e 0%, #27ae60 100%);
+}
+#video-section .section-title { color: #fff; }
+#video-section .section-sub { color: rgba(255,255,255,0.8); }
+#video-section .section-divider { background: linear-gradient(90deg, var(--yellow), #fff); }
+.video-wrapper {
+  max-width: 760px; margin: 0 auto;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  border: 4px solid rgba(255,255,255,0.2);
+  position: relative;
+}
+.video-wrapper::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(transparent 70%, rgba(0,0,0,0.3));
+  pointer-events: none; z-index: 1;
+}
+.video-wrapper iframe { display: block; width: 100%; height: 430px; border: none; }
+.video-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.video-tag {
+  background: rgba(255,255,255,0.15); color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.3); border-radius: 99px;
+  padding: 6px 16px; font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
+}
+@media (max-width: 600px) { .video-wrapper iframe { height: 220px; } }
+
+/* ─── QUIZ SECTION ─── */
+#quiz { padding: 80px 0; background: #fff; }
+.quiz-container {
+  max-width: 680px; margin: 0 auto;
+  background: linear-gradient(135deg, var(--green-pale) 0%, #fff 100%);
+  border-radius: var(--radius-lg); padding: 40px 36px;
+  box-shadow: var(--shadow); border: 2px solid var(--green-light);
+}
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.quiz-progress-text { font-size: 0.85rem; font-weight: 700; color: var(--text-mid); }
+.quiz-score-live { background: var(--green-main); color: #fff; border-radius: 99px; padding: 6px 16px; font-size: 0.85rem; font-weight: 800; }
+.quiz-progress-bar-wrap { height: 8px; background: var(--green-light); border-radius: 99px; margin-bottom: 28px; overflow: hidden; }
+.quiz-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-main), var(--yellow)); border-radius: 99px; transition: width 0.5s ease; }
+.quiz-question-num { font-size: 0.8rem; font-weight: 700; color: var(--green-main); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.quiz-question-text { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 24px; line-height: 1.5; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option {
+  background: #fff; border: 2.5px solid var(--green-light); border-radius: var(--radius);
+  padding: 14px 20px; cursor: pointer; transition: all 0.25s;
+  font-size: 0.95rem; font-weight: 600; color: var(--text-dark);
+  display: flex; align-items: center; gap: 12px;
+  text-align: left; font-family: 'Poppins', sans-serif;
+}
+.quiz-option:hover:not(:disabled) { border-color: var(--green-main); background: var(--green-pale); transform: translateX(6px); }
+.quiz-option.correct { background: #d4f7e0; border-color: var(--green-main); color: var(--green-dark); }
+.quiz-option.wrong { background: #ffe0e0; border-color: #e74c3c; color: #c0392b; }
+.quiz-option:disabled { cursor: not-allowed; }
+.option-label {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--green-light); color: var(--green-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 800; flex-shrink: 0;
+}
+.quiz-feedback {
+  margin-top: 16px; padding: 14px 18px; border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 700; display: none; animation: fadeInUp 0.4s ease;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: #d4f7e0; color: var(--green-dark); border: 2px solid var(--green-main); }
+.quiz-feedback.wrong-fb { background: #ffe0e0; color: #c0392b; border: 2px solid #e74c3c; }
+.quiz-next-btn {
+  margin-top: 20px; width: 100%;
+  background: var(--green-main); color: #fff; border: none; border-radius: 99px;
+  padding: 14px; font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.25s; display: none;
+}
+.quiz-next-btn:hover { background: var(--green-dark); transform: scale(1.02); }
+.quiz-result {
+  text-align: center; display: none; animation: fadeInUp 0.6s ease;
+}
+.result-score {
+  font-size: 5rem; font-weight: 900; color: var(--green-dark);
+  background: linear-gradient(135deg, var(--green-dark), var(--green-main));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1; margin: 20px 0 8px;
+}
+.result-msg { font-size: 1.1rem; font-weight: 700; color: var(--text-mid); margin-bottom: 24px; }
+.badge-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 24px 0; }
+.award-badge {
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  border-radius: var(--radius-lg); padding: 20px 24px; text-align: center;
+  box-shadow: 0 6px 24px rgba(244,165,34,0.3); animation: badgePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  min-width: 120px;
+}
+.award-badge .badge-icon { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+.award-badge p { font-size: 0.75rem; font-weight: 800; color: #fff; }
+.sertifikat {
+  background: linear-gradient(135deg, #fffbe6, #fff8c5);
+  border: 4px double var(--yellow-dark); border-radius: var(--radius-lg);
+  padding: 28px; margin: 16px 0; position: relative;
+  box-shadow: 0 4px 20px rgba(244,165,34,0.2);
+}
+.sertifikat::before {
+  content: '🏆'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+  font-size: 2rem;
+}
+.sertifikat h3 { font-size: 1.1rem; font-weight: 900; color: var(--yellow-dark); margin-bottom: 4px; }
+.sertifikat p { font-size: 0.8rem; color: #a67c00; }
+.stiker-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.stiker { font-size: 2.2rem; animation: stikerWiggle 1.5s ease infinite; display: inline-block; cursor: default; }
+.stiker:nth-child(2) { animation-delay: 0.2s; }
+.stiker:nth-child(3) { animation-delay: 0.4s; }
+@keyframes stikerWiggle { 0%,100% { transform: rotate(-5deg) scale(1); } 50% { transform: rotate(5deg) scale(1.1); } }
+.quiz-restart-btn {
+  background: linear-gradient(90deg, var(--green-main), var(--green-dark)); color: #fff;
+  border: none; border-radius: 99px; padding: 14px 36px;
+  font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.25s; margin-top: 16px;
+}
+.quiz-restart-btn:hover { transform: scale(1.05); box-shadow: 0 8px 24px rgba(46,204,113,0.4); }
+
+/* ─── CONFETTI ─── */
+.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9000; }
+.confetti-piece {
+  position: absolute; width: 10px; height: 10px; border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─── TANTANGAN SECTION ─── */
+#tantangan {
+  padding: 80px 0;
+  background: linear-gradient(160deg, var(--green-pale), #fff8e1);
+}
+.tantangan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px; }
+.tantangan-card {
+  border-radius: var(--radius-lg); padding: 28px 20px; text-align: center;
+  cursor: pointer; transition: all 0.35s; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.tantangan-card::after {
+  content: 'Klik untuk lihat tugas! 👇'; position: absolute; inset: 0;
+  background: rgba(0,0,0,0.65); color: #fff; font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s; border-radius: var(--radius-lg);
+  padding: 10px;
+}
+.tantangan-card:hover::after { opacity: 1; }
+.tantangan-card:hover { transform: translateY(-8px) scale(1.03); }
+.tantangan-card .t-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+.tantangan-card h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 6px; }
+.tantangan-card p { font-size: 0.75rem; line-height: 1.5; }
+.t-c1 { background: linear-gradient(135deg, #c8f7d0, #a8edbc); color: var(--green-dark); }
+.t-c2 { background: linear-gradient(135deg, #d0eeff, #b0d8ff); color: #1a4a7a; }
+.t-c3 { background: linear-gradient(135deg, #fff3c8, #ffe99a); color: #7a5a00; }
+.t-c4 { background: linear-gradient(135deg, #ffe0cc, #ffccaa); color: #7a2e00; }
+.t-c5 { background: linear-gradient(135deg, #e0ccff, #ccaaff); color: #3a007a; }
+.tugas-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 800;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.tugas-modal.open { display: flex; }
+.tugas-box {
+  background: #fff; border-radius: var(--radius-lg); padding: 40px 36px;
+  max-width: 540px; width: 100%; position: relative;
+  animation: modalPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modalPop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+.tugas-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--green-light); border: none; border-radius: 50%; width: 36px; height: 36px;
+  cursor: pointer; font-size: 1rem; transition: all 0.25s; color: var(--green-dark); font-weight: 700;
+}
+.tugas-close:hover { background: var(--green-main); color: #fff; transform: rotate(90deg); }
+.tugas-box h2 { font-size: 1.3rem; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; }
+.tugas-box .tugas-sub { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 20px; }
+.tugas-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.tugas-list li {
+  background: var(--green-pale); border-radius: var(--radius); padding: 12px 16px;
+  font-size: 0.88rem; font-weight: 600; color: var(--text-dark); display: flex; gap: 10px; align-items: flex-start;
+}
+.tugas-list li::before { content: '✅'; flex-shrink: 0; }
+
+/* ─── PENUTUP ─── */
+#penutup {
+  padding: 100px 0 80px;
+  background: linear-gradient(180deg, #1a7a2e 0%, #0f5a20 100%);
+  text-align: center; position: relative; overflow: hidden;
+}
+#penutup .section-title { color: #fff; }
+#penutup .section-divider { background: linear-gradient(90deg, var(--yellow), #fff); }
+.penutup-quote {
+  max-width: 680px; margin: 0 auto 40px;
+  background: rgba(255,255,255,0.1); border-radius: var(--radius-lg);
+  padding: 32px 36px; border: 2px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+}
+.penutup-quote p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem); font-weight: 700; color: #fff;
+  line-height: 1.7; font-style: italic;
+}
+.penutup-quote .quote-mark { font-size: 3rem; color: var(--yellow); line-height: 1; display: block; }
+.penutup-tree-scene { margin: 30px auto; font-size: clamp(4rem, 12vw, 8rem); animation: treeGrow 3s ease-in-out infinite alternate; }
+@keyframes treeGrow { from { transform: scale(0.9); filter: brightness(0.8); } to { transform: scale(1.05); filter: brightness(1.1); } }
+.penutup-ground { font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-top: 8px; }
+.recycling-icons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.rec-icon { font-size: 2rem; animation: iconBounce 2.5s ease infinite; }
+.rec-icon:nth-child(2) { animation-delay: 0.4s; }
+.rec-icon:nth-child(3) { animation-delay: 0.8s; }
+.rec-icon:nth-child(4) { animation-delay: 1.2s; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #0a3d14; color: rgba(255,255,255,0.65);
+  text-align: center; padding: 24px 20px; font-size: 0.8rem;
+}
+footer strong { color: var(--yellow); }
+
+/* ─── SCROLL ANIMATIONS ─── */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.visible { opacity: 1; transform: none; }
+.reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-right.visible { opacity: 1; transform: none; }
+.stagger-1 { transition-delay: 0.1s !important; }
+.stagger-2 { transition-delay: 0.2s !important; }
+.stagger-3 { transition-delay: 0.3s !important; }
+.stagger-4 { transition-delay: 0.4s !important; }
+.stagger-5 { transition-delay: 0.5s !important; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .quiz-container { padding: 28px 20px; }
+  .tugas-box { padding: 28px 20px; }
+  .materi-detail { padding: 24px 20px; }
+  .penutup-quote { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-tree">🌱</div>
+  <div class="loading-text">Waste to Wonder</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  <div class="loading-sub">Memuat modul belajar seru... 🌿</div>
+</div>
+
+<!-- Scroll Progress Bar -->
+<div id="progress-bar" style="width:0%"></div>
+
+<!-- Floating Leaves -->
+<div class="floating-leaves" id="leaves-container"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo">♻️ Waste<span>Wonder</span></div>
+  <div class="nav-links">
+    <a href="#materi">📚 Materi</a>
+    <a href="#video-section">🎬 Video</a>
+    <a href="#quiz">🧠 Quiz</a>
+    <a href="#tantangan">🏆 Tantangan</a>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section id="hero">
+  <div class="hero-clouds">
+    <div class="cloud" style="top:8%;animation-duration:28s;animation-delay:0s">☁️</div>
+    <div class="cloud" style="top:18%;animation-duration:35s;animation-delay:8s;font-size:2.2rem">☁️</div>
+    <div class="cloud" style="top:5%;animation-duration:22s;animation-delay:15s;font-size:2rem">⛅</div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">🌿 E-Modul Interaktif 2026</div>
+    <h1 class="hero-title">Waste to <span class="highlight">Wonder</span>:<br>Dari Limbah Menjadi Manfaat</h1>
+    <p class="hero-sub">Belajar mengubah sampah menjadi sesuatu yang berguna dan menyenangkan. Kamu bisa jadi pahlawan lingkungan! 🦸</p>
+    <div class="hero-btns">
+      <a href="#materi" class="btn-primary">📚 Mulai Belajar</a>
+      <a href="#quiz" class="btn-secondary">🧠 Main Quiz</a>
+    </div>
+    <div class="hero-icons">
+      <div class="hero-icon-item"><span class="ico">♻️</span><span>Daur Ulang</span></div>
+      <div class="hero-icon-item"><span class="ico">🌱</span><span>Hijau Bumi</span></div>
+      <div class="hero-icon-item"><span class="ico">✨</span><span>Kreatif</span></div>
+      <div class="hero-icon-item"><span class="ico">🏆</span><span>Juara</span></div>
+    </div>
+  </div>
+  <div class="hero-trees">
+    <div class="hero-tree">🌳</div>
+    <div class="hero-tree">🌲</div>
+    <div class="hero-tree">🌴</div>
+  </div>
+  <div class="hero-ground"></div>
+</section>
+
+<!-- MATERI SECTION -->
+<section id="materi">
+  <div class="section-container">
+    <div class="reveal">
+      <h2 class="section-title"><span class="emoji">📚</span>Materi Belajar</h2>
+      <div class="section-divider"></div>
+      <p class="section-sub">Klik kartu materi untuk belajar lebih dalam! Selesaikan semua materi dan jadi ahli lingkungan! 🌿</p>
+    </div>
+    <div class="progress-tracker reveal" id="progress-tracker"></div>
+    <div class="materi-cards" id="materi-cards">
+      <!-- Cards injected by JS -->
+    </div>
+    <div class="materi-detail" id="materi-detail"></div>
+  </div>
+</section>
+
+<!-- VIDEO SECTION -->
+<section id="video-section">
+  <div class="section-container">
+    <div class="reveal">
+      <h2 class="section-title"><span class="emoji">🎬</span>Video Edukasi</h2>
+      <div class="section-divider"></div>
+      <p class="section-sub">Yuk tonton animasi edukasi tentang pengelolaan sampah!<br>Seru dan mudah dipahami! 🎉</p>
+    <div class="video-wrapper">
+    <video width="100%" controls autoplay muted loop>
+        <source src="video edukasi.mp4" type="video/mp4">
+        Browser Anda tidak mendukung video.
+    </video>
+</div>
+    <div class="video-tags reveal">
+      <span class="video-tag">🌿 Lingkungan Hidup</span>
+      <span class="video-tag">♻️ Daur Ulang</span>
+      <span class="video-tag">🎓 Edukasi Anak</span>
+      <span class="video-tag">🌍 Go Green</span>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ SECTION -->
+<section id="quiz">
+  <div class="section-container">
+    <div class="reveal">
+      <h2 class="section-title"><span class="emoji">🧠</span>Quiz Seru!</h2>
+      <div class="section-divider"></div>
+      <p class="section-sub">Uji pengetahuanmu tentang sampah dan lingkungan! Jawab 10 soal berikut dengan benar. 🏆</p>
+    </div>
+    <div class="quiz-container reveal" id="quiz-container">
+      <!-- Quiz injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Tantangan Kelompok -->
+<section id="tantangan">
+  <div class="section-container">
+    <div class="reveal">
+      <h2 class="section-title"><span class="emoji">🏆</span>Tantangan Kelompok</h2>
+      <div class="section-divider"></div>
+      <p class="section-sub">Pilih kelompokmu dan selesaikan tantangannya! Klik kartu untuk melihat tugas presentasi kelompok. 💪</p>
+    </div>
+    <div class="tantangan-grid" id="tantangan-grid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Modal Tugas -->
+<div class="tugas-modal" id="tugas-modal">
+  <div class="tugas-box" id="tugas-box">
+    <button class="tugas-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title"></h2>
+    <p class="tugas-sub" id="modal-sub"></p>
+    <ul class="tugas-list" id="modal-list"></ul>
+  </div>
+</div>
+
+<!-- PENUTUP -->
+<section id="penutup">
+  <div class="section-container">
+    <div class="reveal">
+      <h2 class="section-title">🌏 Pesan untuk Kamu</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="penutup-quote reveal">
+      <span class="quote-mark">"</span>
+      <p>Sampah bukan akhir dari sebuah benda. Dengan kreativitas dan semangat, sampah bisa berubah menjadi sesuatu yang bermanfaat dan indah. Kamu bisa mengubah dunia dimulai dari hal kecil!</p>
+      <span class="quote-mark" style="display:block;text-align:right">"</span>
+    </div>
+    <div class="penutup-tree-scene reveal">🌳</div>
+    <p class="penutup-ground reveal">🌿🌱 Tumbuh dari daur ulang, hidup lebih hijau 🌱🌿</p>
+    <div class="recycling-icons reveal">
+      <span class="rec-icon">♻️</span>
+      <span class="rec-icon">🌍</span>
+      <span class="rec-icon">💚</span>
+      <span class="rec-icon">🌟</span>
+      <span class="rec-icon">✨</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Dibuat dengan 💚 untuk <strong>Kegiatan Volunteer Panti Asuhan</strong> · Waste to Wonder E-Modul 2026</p>
+  <p style="margin-top:6px">♻️ Bersama kita jaga bumi untuk generasi masa depan 🌱</p>
+</footer>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ─── DATA ───
+const materiData = [
+  {
+    icon: '🗑️', title: 'Apa itu Sampah?',
+    short: 'Semua sisa benda yang tidak terpakai',
+    detail: {
+      title: '🗑️ Apa itu Sampah?',
+      text: 'Sampah adalah sisa-sisa benda atau barang yang sudah tidak digunakan lagi dan dibuang. Setiap hari kita menghasilkan sampah dari kegiatan makan, bermain, belajar, dan lain-lain. Penting untuk tahu jenis-jenis sampah agar kita bisa memilahnya dengan benar!',
+      examples: [
+        { icon: '📦', label: 'Kemasan Makanan' },
+        { icon: '📄', label: 'Kertas Bekas' },
+        { icon: '🍃', label: 'Daun Gugur' },
+        { icon: '🥛', label: 'Botol Minuman' }
+      ],
+      extra: null
+    }
+  },
+  {
+    icon: '🌿', title: 'Sampah Organik',
+    short: 'Berasal dari makhluk hidup, mudah terurai',
+    detail: {
+      title: '🌿 Sampah Organik',
+      text: 'Sampah organik adalah sampah yang berasal dari makhluk hidup, seperti tumbuhan dan hewan. Sampah ini mudah terurai oleh alam dan bisa dijadikan pupuk kompos yang berguna untuk tanaman! Contohnya adalah sisa makanan, daun kering, dan kulit buah.',
+      examples: [
+        { icon: '🍌', label: 'Kulit Pisang' },
+        { icon: '🍂', label: 'Daun Kering' },
+        { icon: '🍚', label: 'Sisa Makanan' },
+        { icon: '🥦', label: 'Sayuran Busuk' }
+      ],
+      extra: '🌱 Sampah organik bisa dibuat jadi PUPUK KOMPOS untuk tanaman!'
+    }
+  },
+  {
+    icon: '🧴', title: 'Sampah Anorganik',
+    short: 'Buatan manusia, sulit terurai alami',
+    detail: {
+      title: '🧴 Sampah Anorganik',
+      text: 'Sampah anorganik adalah sampah yang berasal dari bahan buatan manusia dan sulit atau tidak bisa terurai oleh alam. Sampah ini butuh ratusan tahun untuk hancur! Tapi bisa didaur ulang menjadi barang-barang baru yang bermanfaat.',
+      examples: [
+        { icon: '🧴', label: 'Botol Plastik' },
+        { icon: '🥫', label: 'Kaleng' },
+        { icon: '🪟', label: 'Kaca/Beling' },
+        { icon: '📱', label: 'Elektronik Rusak' }
+      ],
+      extra: '⚠️ Plastik butuh 400-500 TAHUN untuk terurai di alam!'
+    }
+  },
+  {
+    icon: '⚠️', title: 'Bahaya Buang Sampah Sembarangan',
+    short: 'Dampak buruk bagi lingkungan & kesehatan',
+    detail: {
+      title: '⚠️ Bahaya Buang Sampah Sembarangan',
+      text: 'Membuang sampah sembarangan sangat berbahaya! Bisa menyebabkan banjir, menimbulkan penyakit, mencemari air dan tanah, dan membuat hewan-hewan mati karena menelan sampah. Yuk, mulai buang sampah pada tempatnya!',
+      examples: [
+        { icon: '🌊', label: 'Banjir' },
+        { icon: '🤒', label: 'Penyakit' },
+        { icon: '☠️', label: 'Hewan Mati' },
+        { icon: '💧', label: 'Air Tercemar' }
+      ],
+      extra: '❌ JANGAN buang sampah di sungai, laut, atau sembarang tempat!'
+    }
+  },
+  {
+    icon: '✨', title: 'Waste to Wonder!',
+    short: 'Sampah jadi barang kreatif dan berguna',
+    detail: {
+      title: '✨ Waste to Wonder!',
+      text: 'Sampah bisa diubah menjadi barang yang bermanfaat dan indah! Dengan kreativitas, sampah anorganik seperti botol plastik, kaleng, dan kardus bisa menjadi kerajinan tangan yang keren. Ini namanya 3R: Reduce, Reuse, Recycle!',
+      examples: null,
+      wonder: [
+        { icon: '✏️', label: 'Tempat Pensil dari Kaleng' },
+        { icon: '🏦', label: 'Celengan dari Botol' },
+        { icon: '🪴', label: 'Pot Tanaman dari Botol' },
+        { icon: '🎨', label: 'Kerajinan Kreatif' },
+        { icon: '👜', label: 'Tas dari Plastik' },
+        { icon: '🖼️', label: 'Bingkai dari Kardus' }
+      ]
+    }
+  }
+];
+
+const quizData = [
+  { q: 'Kulit pisang termasuk sampah...', opts: ['Organik', 'Anorganik', 'Berbahaya', 'Elektronik'], ans: 0, fun: '🍌 Benar! Kulit pisang berasal dari tumbuhan, jadi organik!' },
+  { q: 'Botol plastik termasuk sampah...', opts: ['Organik', 'Anorganik', 'Medis', 'Udara'], ans: 1, fun: '🧴 Tepat! Plastik buatan manusia dan sulit terurai.' },
+  { q: 'Sampah yang bisa terurai oleh alam disebut sampah...', opts: ['Plastik', 'Anorganik', 'Organik', 'Logam'], ans: 2, fun: '🌿 Benar sekali! Organik = mudah terurai alami.' },
+  { q: 'Daun kering termasuk jenis sampah...', opts: ['Anorganik', 'Logam', 'Organik', 'Berbahaya'], ans: 2, fun: '🍂 Tepat! Daun berasal dari tumbuhan = organik.' },
+  { q: 'Apa kepanjangan dari 3R dalam pengelolaan sampah?', opts: ['Run-Rest-Recycle', 'Reduce-Reuse-Recycle', 'Read-Relax-Run', 'Race-Ride-Recycle'], ans: 1, fun: '♻️ Benar! Reduce (kurangi), Reuse (gunakan lagi), Recycle (daur ulang)!' },
+  { q: 'Kaleng bekas bisa diubah menjadi...', opts: ['Makanan', 'Tempat pensil', 'Minuman', 'Tanah'], ans: 1, fun: '✏️ Kreatif! Kaleng bisa jadi tempat pensil yang keren!' },
+  { q: 'Membuang sampah di sungai dapat menyebabkan...', opts: ['Hujan lebat', 'Banjir', 'Angin kencang', 'Pelangi'], ans: 1, fun: '🌊 Betul! Sampah di sungai bisa menyebabkan banjir!' },
+  { q: 'Sisa makanan termasuk sampah...', opts: ['Anorganik', 'Plastik', 'Organik', 'Kaca'], ans: 2, fun: '🍚 Benar! Makanan berasal dari makhluk hidup = organik.' },
+  { q: 'Botol plastik butuh berapa tahun untuk terurai?', opts: ['10 tahun', '50 tahun', '100 tahun', '400-500 tahun'], ans: 3, fun: '⚠️ Wow! Plastik butuh 400-500 tahun! Makanya jangan dibuang sembarangan!' },
+  { q: 'Sampah organik bisa dijadikan...', opts: ['Plastik baru', 'Pupuk kompos', 'Logam', 'Kaca'], ans: 1, fun: '🌱 Pintar! Sampah organik bisa jadi pupuk kompos untuk tanaman!' }
+];
+
+const tantanganData = [
+  {
+    icon: '🌿', title: 'Kelompok Organik', color: 't-c1',
+    sub: 'Sampah yang berasal dari makhluk hidup',
+    tasks: [
+      'Sebutkan 5 contoh sampah organik yang ada di sekitar kita',
+      'Tunjukkan bagaimana sampah organik bisa bermanfaat bagi tanaman',
+      'Presentasikan cara memilah sampah organik di rumah'
+    ]
+  },
+  {
+    icon: '🧴', title: 'Kelompok Plastik', color: 't-c2',
+    sub: 'Daur ulang plastik menjadi produk bermanfaat',
+    tasks: [
+      'Sebutkan 5 jenis sampah plastik yang sering kamu temukan',
+      'Jelaskan bahaya plastik jika dibuang sembarangan di laut',
+      'Presentasikan cara mendaur ulang botol plastik dengan kreatif',
+    ]
+  },
+  {
+    icon: '📄', title: 'Kelompok Kertas', color: 't-c3',
+    sub: 'Kreasi dari kertas dan kardus bekas',
+    tasks: [
+      'Sebutkan 5 contoh sampah kertas yang ada di sekitarmu',
+      'Jelaskan dari bahan apa kertas dibuat dan dampaknya terhadap pohon',
+      'Presentasikan cara menghemat penggunaan kertas sehari-hari',
+    ]
+  },
+  {
+    icon: '🥫', title: 'Kelompok Kaca & Kaleng', color: 't-c4',
+    sub: 'Transformasi kaca dan kaleng menjadi karya seni',
+    tasks: [
+      'Sebutkan 5 contoh sampah kaca dan kaleng di lingkungan sekitar',
+      'Jelaskan cara aman menangani pecahan kaca dan kaleng berkarat',
+      'Presentasikan proses daur ulang kaca dan kaleng di pabrik',
+    ]
+  },
+];
+
+// ─── LOADING ───
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loading-screen').classList.add('hidden');
+  }, 2400);
+});
+
+// ─── PROGRESS BAR ───
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = Math.round((scrollTop / docHeight) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ─── LEAVES ───
+function createLeaves() {
+  const container = document.getElementById('leaves-container');
+  const leafEmojis = ['🍃', '🍂', '🌿', '🍀', '☘️'];
+  for (let i = 0; i < 18; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+    leaf.style.left = Math.random() * 100 + 'vw';
+    leaf.style.animationDuration = (12 + Math.random() * 20) + 's';
+    leaf.style.animationDelay = (Math.random() * 20) + 's';
+    leaf.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+    container.appendChild(leaf);
+  }
+}
+createLeaves();
+
+// ─── SCROLL REVEAL ───
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+
+// ─── MATERI ───
+let activeMateri = null;
+let doneMateri = new Set();
+
+function buildMateri() {
+  const tracker = document.getElementById('progress-tracker');
+  const cardsEl = document.getElementById('materi-cards');
+  tracker.innerHTML = '';
+  cardsEl.innerHTML = '';
+
+  materiData.forEach((m, i) => {
+    // Tracker dot
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (doneMateri.has(i) ? ' done' : '');
+    dot.textContent = i + 1;
+    dot.onclick = () => showMateri(i);
+    tracker.appendChild(dot);
+    if (i < materiData.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'progress-line' + (doneMateri.has(i) ? ' done' : '');
+      tracker.appendChild(line);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'materi-card reveal stagger-' + (i + 1);
+    if (activeMateri === i) card.classList.add('active-card');
+    card.innerHTML = `<span class="card-icon">${m.icon}</span><h3>${m.title}</h3><p>${m.short}</p>`;
+    card.onclick = () => showMateri(i);
+    cardsEl.appendChild(card);
+    revealObserver.observe(card);
+  });
+}
+
+function showMateri(idx) {
+  activeMateri = idx;
+  doneMateri.add(idx);
+  buildMateri();
+
+  const d = materiData[idx].detail;
+  const detailEl = document.getElementById('materi-detail');
+  let html = `<div class="detail-title">${d.title}</div><p class="detail-text">${d.text}</p>`;
+
+  if (d.examples) {
+    html += `<div class="example-grid">`;
+    d.examples.forEach(ex => {
+      html += `<div class="example-item"><span class="ex-icon">${ex.icon}</span><span>${ex.label}</span></div>`;
+    });
+    html += `</div>`;
+  }
+  if (d.wonder) {
+    html += `<div class="wonder-grid">`;
+    d.wonder.forEach(w => {
+      html += `<div class="wonder-item"><span class="w-icon">${w.icon}</span><p>${w.label}</p></div>`;
+    });
+    html += `</div>`;
+  }
+  if (d.extra) {
+    html += `<div style="margin-top:20px;background:var(--green-pale);border-left:4px solid var(--green-main);border-radius:12px;padding:14px 18px;font-weight:700;color:var(--green-dark);font-size:0.9rem">${d.extra}</div>`;
+  }
+
+  detailEl.innerHTML = html;
+  detailEl.classList.add('show');
+  setTimeout(() => detailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+buildMateri();
+
+// ─── QUIZ ───
+let qIdx = 0, score = 0, answered = false;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  if (qIdx >= quizData.length) {
+    showResult();
+    return;
+  }
+  const q = quizData[qIdx];
+  const pct = (qIdx / quizData.length) * 100;
+  container.innerHTML = `
+    <div class="quiz-header">
+      <span class="quiz-progress-text">Soal ${qIdx + 1} dari ${quizData.length}</span>
+      <span class="quiz-score-live">⭐ Skor: ${score}</span>
+    </div>
+    <div class="quiz-progress-bar-wrap">
+      <div class="quiz-progress-bar-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="quiz-question-num">Pertanyaan ${qIdx + 1}</div>
+    <div class="quiz-question-text">${q.q}</div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <button class="quiz-next-btn" id="quiz-next" onclick="nextQuestion()">
+      ${qIdx === quizData.length - 1 ? '🏆 Lihat Hasil!' : 'Lanjut ➡️'}
+    </button>
+  `;
+  const optsEl = document.getElementById('quiz-options');
+  const labels = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i, btn);
+    optsEl.appendChild(btn);
+  });
+  answered = false;
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[qIdx];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.disabled = true);
+  const fb = document.getElementById('quiz-feedback');
+  if (idx === q.ans) {
+    score++;
+    btn.classList.add('correct');
+    opts[q.ans].classList.add('correct');
+    fb.textContent = '✅ ' + q.fun;
+    fb.className = 'quiz-feedback correct-fb show';
+    triggerConfetti();
+  } else {
+    btn.classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.textContent = '❌ Oops! Jawaban yang benar adalah: ' + q.opts[q.ans] + '. ' + q.fun;
+    fb.className = 'quiz-feedback wrong-fb show';
+  }
+  document.getElementById('quiz-next').style.display = 'block';
+}
+
+function nextQuestion() {
+  qIdx++;
+  buildQuiz();
+}
+
+function showResult() {
+  const pct = Math.round((score / quizData.length) * 100);
+  const container = document.getElementById('quiz-container');
+  const isWin = pct >= 80;
+  let resultHTML = `
+    <div class="quiz-result" style="display:block">
+      <div style="font-size:3rem;margin-bottom:8px">${isWin ? '🎉' : '💪'}</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--text-mid)">Hasil Akhir Kamu</div>
+      <div class="result-score">${score}/${quizData.length}</div>
+      <div class="result-msg">${pct}% Benar · ${isWin ? 'Luar biasa! Kamu Pahlawan Lingkungan! 🌿' : 'Bagus! Ayo belajar lagi dan coba ulang! 📚'}</div>
+  `;
+  if (isWin) {
+    resultHTML += `
+      <div class="badge-container">
+        <div class="award-badge" style="animation-delay:0.1s"><span class="badge-icon">🥇</span><p>Pahlawan Lingkungan</p></div>
+        <div class="award-badge" style="animation-delay:0.3s;background:linear-gradient(135deg,#a8edbc,#27ae60)"><span class="badge-icon">🌿</span><p>Green Hero</p></div>
+        <div class="award-badge" style="animation-delay:0.5s;background:linear-gradient(135deg,#d0eeff,#3498db)"><span class="badge-icon">♻️</span><p>Recycle Master</p></div>
+      </div>
+      <div class="sertifikat">
+        <h3>🏆 Sertifikat Pahlawan Lingkungan</h3>
+        <p>Diberikan kepada peserta yang berhasil menjawab ${score} dari ${quizData.length} soal dengan benar</p>
+        <p style="margin-top:8px;font-weight:700;color:var(--yellow-dark)">✨ Waste to Wonder E-Modul 2026 ✨</p>
+      </div>
+      <div class="stiker-row">
+        <span class="stiker">🌟</span><span class="stiker">🌍</span><span class="stiker">💚</span><span class="stiker">♻️</span><span class="stiker">🦋</span>
+      </div>
+    `;
+    for (let i = 0; i < 3; i++) setTimeout(() => triggerConfetti(), i * 600);
+  }
+  resultHTML += `<button class="quiz-restart-btn" onclick="restartQuiz()">🔄 Coba Lagi</button></div>`;
+  container.innerHTML = resultHTML;
+}
+
+function restartQuiz() { qIdx = 0; score = 0; buildQuiz(); }
+
+// ─── CONFETTI ───
+function triggerConfetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#2ecc71','#f9c74f','#f4a522','#27ae60','#a8edbc','#fff','#f96f4f'];
+  for (let i = 0; i < 50; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    c.style.width = (6 + Math.random() * 10) + 'px';
+    c.style.height = c.style.width;
+    container.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+
+// ─── TANTANGAN ───
+function buildTantangan() {
+  const grid = document.getElementById('tantangan-grid');
+  grid.innerHTML = '';
+  tantanganData.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = `tantangan-card ${t.color} reveal stagger-${i + 1}`;
+    card.innerHTML = `<span class="t-icon">${t.icon}</span><h3>${t.title}</h3><p>${t.sub}</p>`;
+    card.onclick = () => openModal(i);
+    grid.appendChild(card);
+    revealObserver.observe(card);
+  });
+}
+
+function openModal(idx) {
+  const t = tantanganData[idx];
+  document.getElementById('modal-title').textContent = t.icon + ' ' + t.title;
+  document.getElementById('modal-sub').textContent = '📋 Tugas Presentasi: ' + t.sub;
+  const list = document.getElementById('modal-list');
+  list.innerHTML = '';
+  t.tasks.forEach(task => {
+    const li = document.createElement('li');
+    li.textContent = task;
+    list.appendChild(li);
+  });
+  document.getElementById('tugas-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('tugas-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('tugas-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('tugas-modal')) closeModal();
+});
+
+buildTantangan();
+buildQuiz();
+</script>
+</body>
+</html> 
